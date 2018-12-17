@@ -38,7 +38,7 @@ features <- read.table("UCI HAR Dataset/features.txt")
 dataset <- rbind(X_train,X_test)
 
 # Part 2. Extract only the measurements on the mean and standard deviation for each measurement.
-# Create a vector of only mean and std, use the vector to subset.
+# Create a vector of only mean and standard deviation, use the vector to subset.
 meanorstd <- grep("mean()|std()", features[, 2]) 
 dataset <- dataset[,meanorstd]
 
@@ -57,7 +57,7 @@ names(activity) <- 'activity'
 dataset <- cbind(subject,activity, dataset)
 
 # Part 4. Uses descriptive activity names to name the activities in the data set
-# group the activity column of "dataset", re-name label by levels with "activity_levels", and then apply it to "dataset".
+# group the activity column of "dataset", re-name label by levels with "activity_lebels", and then apply it to "dataset".
 group <- factor(dataset$activity)
 levels(group) <- activity_labels[,2]
 dataset$activity <- group
