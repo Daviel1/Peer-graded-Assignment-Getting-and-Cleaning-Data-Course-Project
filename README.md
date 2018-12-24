@@ -1,77 +1,61 @@
-# Peer-graded-Assignment-Getting-and-Cleaning-Data-Course-Project
-R script file for cleaning UCI HAR Dataset in sequential steps
+## Course Project
 
-## Download the data and unzip
+### Overview
 
-#Convert string variables for download file
+The purpose of this project is to demonstrate your ability to collect, work
+with, and clean a data set. The goal is to prepare tidy data that can be used
+for later analysis. You will be graded by your peers on a series of yes/no
+questions related to the project. You will be required to submit: 1) a tidy
+data set as described below, 2) a link to a Github repository with your script
+for performing the analysis, and 3) a code book that describes the variables,
+the data, and any transformations or work that you performed to clean up the
+data called `CodeBook.md`. You should also include a `README.md` in the repo
+with your scripts. This repo explains how all of the scripts work and how they
+are connected.
 
-filename <- "UCIHARdata.zip"
-URL <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
-dir <- "UCI HAR Database"
+One of the most exciting areas in all of data science right now is wearable
+computing - see for example this article . Companies like Fitbit, Nike, and
+Jawbone Up are racing to develop the most advanced algorithms to attract new
+users. The data linked to from the course website represent data collected from
+the accelerometers from the Samsung Galaxy S smartphone. A full description is
+available at the site where the data was obtained:
 
-#Verify the download file, if it doesn't exist then downloading to the working directory
+	http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
 
-if(!file.exists(filename)){
-        download.file(URL,filename, mode = "wb") 
-}
+Here are the data for the project:
 
-#Verify the unzip file, if it doesn't exist then unzip the download file
+	https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip
 
-if(!file.exists(dir)){
-        unzip("UCIdata.zip", files = NULL, exdir=".")
-}
+You should create one R script called `run_analysis.R` that does the following. 
 
-## Read file
+1. Merges the training and the test sets to create one data set.
+2. Extracts only the measurements on the mean and standard deviation for each
+   measurement.
+3. Uses descriptive activity names to name the activities in the data set
+4. Appropriately labels the data set with descriptive variable names. 
+5. Creates a second, independent tidy data set with the average of each
+   variable for each activity and each subject. 
 
-subject_test <- read.table("UCI HAR Dataset/test/subject_test.txt")
-subject_train <- read.table("UCI HAR Dataset/train/subject_train.txt")
-X_test <- read.table("UCI HAR Dataset/test/X_test.txt")
-X_train <- read.table("UCI HAR Dataset/train/X_train.txt")
-y_test <- read.table("UCI HAR Dataset/test/y_test.txt")
-y_train <- read.table("UCI HAR Dataset/train/y_train.txt")
-activity_labels <- read.table("UCI HAR Dataset/activity_labels.txt")
-features <- read.table("UCI HAR Dataset/features.txt")  
+Good luck!
 
-## Analysis
+Input
+-----
 
-# Part 1. Merge the test and training datasets together in order to create one dataset
-dataset <- rbind(X_train,X_test)
+Data set: https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip 
 
-# Part 2. Extract only the measurements on the mean and standard deviation for each measurement.
-# Create a vector of only mean and standard deviation, use the vector to subset.
-meanorstd <- grep("mean()|std()", features[, 2]) 
-dataset <- dataset[,meanorstd]
+Analysis Script
+---------------
 
-# Part 3. Appropriately labels the data set with descriptive activity names.
-# Create vector of names without "()" and then apply to the dataSet to rename labels.
-simplename <- sapply(features[, 2], function(x) {gsub("[()]", "",x)})
-names(dataset) <- simplename[meanorstd]
+`run_analysis.R`: this script takes the input data, and creates the output file 
 
-# combine test and train of subject data and activity data and then give descriptive labels
-subject <- rbind(subject_train, subject_test)
-names(subject) <- 'subject'
-activity <- rbind(y_train, y_test)
-names(activity) <- 'activity'
+The script first downloads and unzips the dataset from the above url. The script then reads the test and training sets, merges them (1).  It filters down the mean and std features, and selects only these (2) It merges in the activity names for the activities (3) It then builds up a series of labeled columns to represent single variables from the feature. (4)  It calculates the average of each variable and writes out this data set to `tidydata.txt` (5)
 
-# combine subject, activity, and mean and standard deviation data set to create final data set.
-dataset <- cbind(subject,activity, dataset)
+Output
+------
 
-# Part 4. Uses descriptive activity names to name the activities in the data set
-# group the activity column of "dataset", re-name label by levels with "activity_lebels", and then apply it to "dataset".
-group <- factor(dataset$activity)
-levels(group) <- activity_labels[,2]
-dataset$activity <- group
+* Tidy dataset: `tidy.txt`
 
-# Part 5. Creates a second, independent tidy data set with the average of each variable for each activity and each subject.
+Code Book
+---------
 
-# check if reshape2 package is installed
-if (!"reshape2" %in% installed.packages()) {
-        install.packages("reshape2")
-}
-library("reshape2")
-
-# reshape/melt the data to tall skinny data remove means (average).  Write the tidydata to the working directory as "tidy_data.txt"
-basedata <- melt(dataset,(id.vars=c("subject","activity")))
-seconddataSet <- dcast(basedata, subject + activity ~ variable, mean)
-names(seconddataSet)[-c(1:2)] <- paste("[mean of]" , names(seconddataSet)[-c(1:2)] )
-write.table(seconddataSet, "tidy_data.txt", sep = ",")
+`CodeBook.md`: describes the variables, the data, and any transformations or work that you performed to clean up the data
