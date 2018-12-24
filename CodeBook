@@ -1,0 +1,59 @@
+## Code Book for Module 3 Data Cleaning Course Project
+
+### Overview
+
+[Source](https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip) of the original data:
+
+	https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip
+
+[Full Description](http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones) is found at the site where the data was obtained:
+
+	http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
+  
+  ### Process
+
+The script `run_analysis.R` performs the following process to clean up the data
+and create tidy data sets:
+
+1. Download the source data, unzip and read unzipped files.
+
+2. Merge the training and test datasets to create a single database called 'dataset.txt'
+
+3. Extract only the measurements of the mean and standard deviation for each measurement of 'dataset.txt'
+
+4. Labels the data set with descriptive names.
+
+5. Use the descriptive activity names to rename the activities in the dataset.
+
+7. Finally, create a separate dataset called 'tidy_data.txt' which captures the average of each variable for each activity and each subject.
+
+### Variables
+
+- activity - table contents of 'activity_labels.txt'
+- activity_labels - names for data columns dervied from activity
+- basedata - reshaped/melted data of 'dataset.txt'
+- features - table contents of 'features.txt'
+- subject_train - table contents of 'subject_train.txt'
+- subject_test - table contents of 'subject_test.txt'
+- subject - combined dataset of subject_train and subject_test datasets
+- dataset - combined dataset of subject, activity datasets
+- y_test - table contents of 'test/y_test.txt'
+- y_train - table contents of 'train/y_train.txt'
+- x_test - table contents of 'test/x_test.txt'
+- x_train - table contents of 'train/y_train.txt'
+- seconddatabase - subsetted, human readable data ready for output in accordance to project instructions.
+  
+  ### Output
+  
+`dataset.txt` is a 10299x79 data frame.
+
+- The first column contains subject IDs.
+- The second column contains activity names.
+- The last 79 columns are measurements.
+- Subject IDs are integers between 1 and 30.
+
+`seconddataset.txt` is a 180x81 data frame.
+
+- The first column contains subject IDs.
+- The second column contains activity names.
+- The averages for each of the 79 attributes are in columns 3-81.
